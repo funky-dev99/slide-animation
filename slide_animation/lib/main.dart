@@ -1,98 +1,150 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+//
+// Created by CodeWithFlexZ
+// Tutorials on my YouTube
+//
+//! Instagram
+//! @CodeWithFlexZ
+//
+//? GitHub
+//? AmirBayat0
+//
+//* YouTube
+//* Programming with FlexZ
+//
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Image Picker Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Image Picker Example'),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: FinalView(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+class FinalView extends StatefulWidget {
+  const FinalView({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<FinalView> createState() => _FinalViewState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  List<XFile>? _imageFileList;
+class _FinalViewState extends State<FinalView> {
+  bool _sortAscending = true;
 
-  void _pickImages() async {
-    try {
-      final List<XFile>? selectedImages = await ImagePicker().pickMultiImage(
-        maxWidth: 500,
-        maxHeight: 500,
-      );
-      if (selectedImages!.isNotEmpty) {
-        setState(() {
-          _imageFileList = selectedImages;
-        });
-      }
-    } catch (e) {
-      // Handle any errors
-    }
-  }
+  final List<Map<String, dynamic>> _products = [
+    {'id': 1, 'name': 'Apple Air Tag', 'price': 19.99},
+    {'id': 2, 'name': 'Fire Tv Stick', 'price': 15.99},
+    {'id': 3, 'name': 'Wireless microscope', 'price': 12.99},
+    {'id': 4, 'name': 'Lash Princess', 'price': 24.99},
+    {'id': 5, 'name': 'Travel Bag', 'price': 17.99},
+    {'id': 6, 'name': 'AirBuds', 'price': 35.99},
+  ];
 
-  Widget _buildImagePreview() {
-    if (_imageFileList != null) {
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _imageFileList!.length,
-        itemBuilder: (context, index) {
-          if (kIsWeb) {
-            return Image.network(_imageFileList![index].path);
-          } else {
-            return Image.file(File(_imageFileList![index].path));
-          }
-        },
-      );
-    } else {
-      return const Text("No images selected.");
-    }
+  void _sortProducts(bool ascending) {
+    setState(() {
+      _sortAscending = ascending;
+      _products.sort((a, b) => ascending
+          ? a['price'].compareTo(b['price'])
+          : b['price'].compareTo(a['price']));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        centerTitle: true,
+        backgroundColor: Colors.indigoAccent,
+        title: const Text('CodeWithFlexz'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _buildImagePreview(),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Optional, if you want to keep the button at the bottom right
-      floatingActionButton: Stack(
+      body: Column(
         children: [
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: ElevatedButton(
-              onPressed: _pickImages,
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(20), // Button size
-                primary: Theme.of(context).floatingActionButtonTheme.backgroundColor, // Button color
-              ),
-              child: Icon(Icons.photo_library),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 29, horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _sortAscending ? 'Price Low to High' : 'Price High to Low',
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                InkWell(
+                  onTap: () => _sortProducts(!_sortAscending),
+                  child: Row(
+                    children: [
+                      const Text(
+                        'Price',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.indigoAccent),
+                      ),
+                      Icon(
+                          _sortAscending
+                              ? Icons.arrow_drop_down
+                              : Icons.arrow_drop_up,
+                          color: Colors.indigoAccent),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _products.length,
+              itemBuilder: (context, index) {
+                // the list item - product
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Card(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      margin:
+                      const EdgeInsets.only(bottom: 3, left: 3, right: 3),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${_products[index]['id']}',
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${_products[index]['name']}',
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Text(
+                            '\$${_products[index]['price']}',
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
