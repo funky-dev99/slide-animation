@@ -40,6 +40,8 @@ dependencies:
   video_player: ^2.7.2
   multiple_images_picker: ^1.0.1
   youtube_player_flutter: ^9.0.1
+  redacted: ^1.0.11
+  skeletonizer: ^1.0.1
 
 dev_dependencies:
   flutter_test:
